@@ -1,4 +1,5 @@
 import pandas as pd
+from pathlib import Path
 
 def extract(path: str):
     """
@@ -7,5 +8,7 @@ def extract(path: str):
     Returns:
         pd.DataFrame: DataFrame containing the extracted data.
     """
-    df = pd.read_csv(path)
+    input_path = Path(path)
+    df = pd.read_csv(input_path)
+    print("Looking for file at:", input_path.resolve())
     return df

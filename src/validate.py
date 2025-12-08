@@ -1,0 +1,131 @@
+# validate.py
+import pandas as pd
+
+# Columns we expect to be numeric (if present)
+NUMERIC_COLUMNS = [
+    "height",
+    "weight",
+    # to be modified based on dataset specifics
+    # "age_at_diagnosis",
+    # "number_pack_years_smoked",
+]
+
+# Columns that must be present and non-null for a row to be considered valid
+REQUIRED_COLUMNS = [
+    "patient_id",
+    "gender",
+    "height",
+    "weight",
+    "race_list",
+    "person_neoplasm_cancer_status",
+    "vital_status",
+    "tobacco_smoking_history",
+    "alcohol_history_documented",
+    "reflux_history",
+    "barretts_esophagus",
+    "primary_pathology_histological_type",
+]
+
+
+def validate(df: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]:
+    """
+    Validate the cleaned DataFrame.
+
+    Responsibilities:
+    1. Enforce basic column types (numeric columns).
+    2. Ensure required fields are not null.
+    3. Optionally apply simple domain rules.
+    4. Split into:
+       - cleaned_data: rows passing all validation
+       - rejects: rows failing validation, with a 'reason' column
+
+    Assumes the input df has already gone through clean.clean().
+
+    Returns:
+        cleaned_data (pd.DataFrame)
+        rejects (pd.DataFrame)
+    """
+
+    df = df.copy()
+
+    # 1. Enforcing numeric types.
+    for col in NUMERIC_COLUMNS:
+        if col in df.columns:
+            df[col] = pd.to_numeric(df[col], errors="coerce")
+
+    # Keeping only required columns that actually exist.
+    existing_required = [col for col in REQUIRED_COLUMNS if col in df.columns]
+
+    # If none of the required columns exist, we can't validate meaningfully.
+    if not existing_required:
+        cleaned_data = df
+        rejects = pd.DataFrame(columns=list(df.columns) + ["reason"])
+        return cleaned_data, rejects
+
+    # 2. Checking for missing required fields.
+    missing_required_mask = df[existing_required].isna().any(axis=1)
+
+    # Starting with no domain rule failures.
+    domain_fail_mask = pd.Series(False, index=df.index)
+
+    # 3. Simple domain rules.
+    #    Only applied to rows that haven't already failed the missing-required check
+    still_candidate_mask = ~missing_required_mask
+
+    if "height" in df.columns:
+        invalid_height = (
+            still_candidate_mask
+            & df["height"].notna()
+            & ((df["height"] <= 0) | (df["height"] > 300))
+        )
+        domain_fail_mask |= invalid_height
+
+    if "weight" in df.columns:
+        invalid_weight = (
+            still_candidate_mask
+            & df["weight"].notna()
+            & ((df["weight"] <= 0) | (df["weight"] > 500))
+        )
+        domain_fail_mask |= invalid_weight
+
+    # Combined mask of all invalid rows.
+    invalid_mask = missing_required_mask | domain_fail_mask
+
+    # If everything is valid, just return df and an empty rejects table
+    if not invalid_mask.any():
+        cleaned_data = df
+        rejects = pd.DataFrame(columns=list(df.columns) + ["reason"])
+        return cleaned_data, rejects
+
+    # Building detailed reasons for each rejected row.
+    reasons = []
+
+    for idx, row in df[invalid_mask].iterrows():
+        row_reasons = []
+
+        # Missing required fields for this row
+        missing_fields = [col for col in existing_required if pd.isna(row[col])]
+        if missing_fields:
+            row_reasons.append("Missing fields: " + ", ".join(missing_fields))
+
+        # Domain-specific failures
+        if "height" in df.columns and not pd.isna(row.get("height")):
+            if row["height"] <= 0 or row["height"] > 300:
+                row_reasons.append("Invalid height value")
+
+        if "weight" in df.columns and not pd.isna(row.get("weight")):
+            if row["weight"] <= 0 or row["weight"] > 500:
+                row_reasons.append("Invalid weight value")
+
+        if not row_reasons:
+            row_reasons.append("Failed validation")
+
+        reasons.append("; ".join(row_reasons))
+
+    # Build rejects DataFrame
+    rejects = df[invalid_mask].copy()
+    rejects["reason"] = reasons
+
+    cleaned_data = df[~invalid_mask].copy()
+
+    return cleaned_data, rejects

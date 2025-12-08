@@ -1,29 +1,34 @@
 import pandas as pd
-from readers import csv_reader # Extract logic
-import clean # Transform logic
-import load # Load logic
+from readers import csv_reader # Extraction logic
+import clean # Cleaning logic
+import validate # Validation logic
 
 def main():
-    # ETL Pipeline Processes
-
-    # Step 1: Extracting the Data
-    data = csv_reader.extract('data/Esophageal_Dataset.csv')
+    # Step 1: Extracting the data
+    data = csv_reader.extract("data/Esophageal_Dataset.csv")
     print("Raw Data:")
     print(data.head())
     print("Raw Shape:", data.shape)
-    
-    # Step 2: Transforming the extracted data
-    cleaned_data, rejects = clean.transform(data)
-    print("Cleaned Data:")
+
+    # Step 2: Cleaning the extracted data (generic cleaning)
+    cleaned_raw = clean.clean(data)
+    print("\nAfter generic cleaning:")
+    print(cleaned_raw.head())
+    print("Cleaned Raw Shape:", cleaned_raw.shape)
+
+    # Step 3: Validating the cleaned data (types, required fields, domain rules)
+    cleaned_data, rejects = validate.validate(cleaned_raw)
+    print("\nValidated Cleaned Data:")
     print(cleaned_data.head())
-    print("Cleaned Shape:", cleaned_data.shape)
+    print("Validated Cleaned Shape:", cleaned_data.shape)
 
     print("\nRejected Data:")
     print(rejects.head())
     print("Rejects Shape:", rejects.shape)
-    
-    cleaned_data.to_csv('data/cleaned_esophageal_data.csv', index=False)
-    rejects.to_csv('data/rejected_esophageal_data.csv', index=False)
+
+    # For now, save results to CSV
+    cleaned_data.to_csv("data/cleaned_esophageal_data.csv", index=False)
+    rejects.to_csv("data/rejected_esophageal_data.csv", index=False)
 
     print("\nCleaned data saved to 'data/cleaned_esophageal_data.csv'")
     print("Rejected data saved to 'data/rejected_esophageal_data.csv'")

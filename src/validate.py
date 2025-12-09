@@ -1,16 +1,15 @@
-# validate.py
 import pandas as pd
 
 # Columns we expect to be numeric (if present)
 NUMERIC_COLUMNS = [
     "height",
     "weight",
-    # to be modified based on dataset specifics
     # "age_at_diagnosis",
     # "number_pack_years_smoked",
 ]
 
 # Columns that must be present and non-null for a row to be considered valid
+# I dropped several columns such as 'age_at_diagnosis' and 'number_pack_years_smoked'
 REQUIRED_COLUMNS = [
     "patient_id",
     "gender",
@@ -34,8 +33,9 @@ def validate(df: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]:
     Responsibilities:
     1. Enforce basic column types (numeric columns).
     2. Ensure required fields are not null.
-    3. Optionally apply simple domain rules.
-    4. Split into:
+    3. Add a new column for patient BMI.
+    4. Optionally apply simple domain rules.
+    5. Split into:
        - cleaned_data: rows passing all validation
        - rejects: rows failing validation, with a 'reason' column
 
@@ -68,8 +68,58 @@ def validate(df: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]:
     # Starting with no domain rule failures.
     domain_fail_mask = pd.Series(False, index=df.index)
 
-    # 3. Simple domain rules.
-    #    Only applied to rows that haven't already failed the missing-required check
+    # 3. Adding BMI column if height and weight are present.
+    if "height" in df.columns and "weight" in df.columns:
+        # Only computing BMI where height > 0 and both height & weight are present
+        valid_bmi_mask = (
+            df["height"].notna()
+            & (df["height"] > 0)
+            & df["weight"].notna()
+        )
+
+        df["bmi"] = pd.NA  # default
+        df.loc[valid_bmi_mask, "bmi"] = (
+            df.loc[valid_bmi_mask, "weight"]
+            / ((df.loc[valid_bmi_mask, "height"] / 100) ** 2)
+        ).round(2)
+    else:
+        df["bmi"] = pd.NA
+
+    
+    # Including a column for BMI categories.
+    df["bmi_category"] = pd.NA
+    if "bmi" in df.columns:
+        valid_bmi = df["bmi"].notna()
+
+        df.loc[valid_bmi & (df["bmi"] < 18.5), "bmi_category"] = "Underweight"
+        df.loc[valid_bmi & (df["bmi"] >= 18.5) & (df["bmi"] < 25), "bmi_category"] = "Normal"
+        df.loc[valid_bmi & (df["bmi"] >= 25) & (df["bmi"] < 30), "bmi_category"] = "Overweight"
+        df.loc[valid_bmi & (df["bmi"] >= 30), "bmi_category"] = "Obese"
+
+    # Alcohol consumption derived features.
+    if ("frequency_of_alcohol_consumption" in df.columns
+        and "amount_of_alcohol_consumption_per_day" in df.columns):
+
+        df["total_drinks_per_week"] = (
+            df["frequency_of_alcohol_consumption"] *
+            df["amount_of_alcohol_consumption_per_day"]
+        )
+
+        # Categorizing alcohol consumption.
+        df["alcohol_risk_category"] = pd.NA
+
+        df.loc[df["total_drinks_per_week"] == 0, "alcohol_risk_category"] = "None"
+        df.loc[(df["total_drinks_per_week"] > 0) & (df["total_drinks_per_week"] <= 7),
+            "alcohol_risk_category"] = "Light"
+        df.loc[(df["total_drinks_per_week"] > 7) & (df["total_drinks_per_week"] <= 14),
+            "alcohol_risk_category"] = "Moderate"
+        df.loc[(df["total_drinks_per_week"] > 14) & (df["total_drinks_per_week"] <= 35),
+            "alcohol_risk_category"] = "Heavy"
+        df.loc[df["total_drinks_per_week"] > 35, "alcohol_risk_category"] = "Very Heavy"
+
+
+    # 4. Simple domain rules.
+    # Only applied to rows that haven't already failed the missing-required check
     still_candidate_mask = ~missing_required_mask
 
     if "height" in df.columns:

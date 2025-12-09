@@ -16,7 +16,7 @@ def extract(path: str):
         raise FileNotFoundError(f"The file {input_path.resolve()} could not be found.")
     
     try:
-        df = pd.read_csv(input_path)
+        df = pd.read_csv(input_path, low_memory=False)
         print(f"Successfully read {len(df)} rows and {len(df.columns)} columns from {input_path.name}")
         return df
     except pd.errors.EmptyDataError:

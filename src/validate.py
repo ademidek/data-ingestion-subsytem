@@ -4,8 +4,8 @@ import pandas as pd
 NUMERIC_COLUMNS = [
     "height",
     "weight",
-    # "age_at_diagnosis",
-    # "number_pack_years_smoked",
+    "frequency_of_alcohol_consumption",
+    "amount_of_alcohol_consumption_per_day",
 ]
 
 # Columns that must be present and non-null for a row to be considered valid
@@ -24,7 +24,6 @@ REQUIRED_COLUMNS = [
     "barretts_esophagus",
     "primary_pathology_histological_type",
 ]
-
 
 def validate(df: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]:
     """

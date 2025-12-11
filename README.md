@@ -25,6 +25,7 @@ data_ingestion_pipeline/
 ├── src/
 │   ├── config.py
 │   ├── readers/
+│   │   ├── __init__.py
 │   │   ├── csv_reader.py
 │   │   ├── json_reader.py
 │   │   └── api_reader.py
@@ -32,6 +33,11 @@ data_ingestion_pipeline/
 │   ├── clean.py
 │   ├── load.py
 │   ├── rules.py
+│   ├── repo.py
+│   ├── schema.sql
+│   ├── schema_init.py
+│   ├── logging_config.py
+│   ├── .env
 │   └── main.py
 │
 ├── config/
@@ -39,6 +45,9 @@ data_ingestion_pipeline/
 │
 ├── data/
 │   ├── Esophageal_Dataset.csv
+│
+├── logs/
+│   ├── log files
 │
 ├── tests/
 │   ├── test_validate.py
@@ -59,3 +68,4 @@ Personal notes before finishing:
 -modularize my code more, break things down into functions so they can be tested.
 -shorten the validation code logic and break it up into smaller functions.
 -create oop sort of method you have your class and your methods
+-if there are processes that are supposed to fail, make sure you right tests to check if they really fail.

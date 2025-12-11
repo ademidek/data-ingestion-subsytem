@@ -1,29 +1,16 @@
 import pandas as pd
+import logging
 
-# Columns we expect to be numeric (if present)
-NUMERIC_COLUMNS = [
-    "height",
-    "weight",
-    "frequency_of_alcohol_consumption",
-    "amount_of_alcohol_consumption_per_day",
-]
+logger = logging.getLogger("etl.validate")
 
-# Columns that must be present and non-null for a row to be considered valid
-# I dropped several columns such as 'age_at_diagnosis' and 'number_pack_years_smoked'
-REQUIRED_COLUMNS = [
-    "patient_id",
-    "gender",
-    "height",
-    "weight",
-    "race_list",
-    "person_neoplasm_cancer_status",
-    "vital_status",
-    "tobacco_smoking_history",
-    "alcohol_history_documented",
-    "reflux_history",
-    "barretts_esophagus",
-    "primary_pathology_histological_type",
-]
+from rules import (
+    REQUIRED_COLUMNS,
+    NUMERIC_COLUMNS,
+    HEIGHT_MAX, HEIGHT_MIN,
+    WEIGHT_MAX, WEIGHT_MIN,
+    BMI_NORMAL, BMI_OVERWEIGHT, BMI_UNDERWEIGHT,
+    ALCOHOL_RISK_CATEGORIES,
+)
 
 def validate(df: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]:
     """
@@ -50,7 +37,10 @@ def validate(df: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]:
     # 1. Enforcing numeric types.
     for col in NUMERIC_COLUMNS:
         if col in df.columns:
+            before_nulls = df[col].isna().sum()
             df[col] = pd.to_numeric(df[col], errors="coerce")
+            after_nulls = df[col].isna().sum()
+            logger.info(f"Numeric cast: {col} - Introduced {after_nulls - before_nulls} nulls")
 
     # Keeping only required columns that actually exist.
     existing_required = [col for col in REQUIRED_COLUMNS if col in df.columns]
@@ -63,6 +53,7 @@ def validate(df: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]:
 
     # 2. Checking for missing required fields.
     missing_required_mask = df[existing_required].isna().any(axis=1)
+    logger.info(f"Rows missing required fields: {missing_required_mask.sum()}")
 
     # Starting with no domain rule failures.
     domain_fail_mask = pd.Series(False, index=df.index)
@@ -90,10 +81,10 @@ def validate(df: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]:
     if "bmi" in df.columns:
         valid_bmi = df["bmi"].notna()
 
-        df.loc[valid_bmi & (df["bmi"] < 18.5), "bmi_category"] = "Underweight"
-        df.loc[valid_bmi & (df["bmi"] >= 18.5) & (df["bmi"] < 25), "bmi_category"] = "Normal"
-        df.loc[valid_bmi & (df["bmi"] >= 25) & (df["bmi"] < 30), "bmi_category"] = "Overweight"
-        df.loc[valid_bmi & (df["bmi"] >= 30), "bmi_category"] = "Obese"
+        df.loc[valid_bmi & (df["bmi"] < BMI_UNDERWEIGHT), "bmi_category"] = "Underweight"
+        df.loc[valid_bmi & (df["bmi"] >= BMI_UNDERWEIGHT) & (df["bmi"] < BMI_NORMAL), "bmi_category"] = "Normal"
+        df.loc[valid_bmi & (df["bmi"] >= BMI_NORMAL) & (df["bmi"] < BMI_OVERWEIGHT), "bmi_category"] = "Overweight"
+        df.loc[valid_bmi & (df["bmi"] >= BMI_OVERWEIGHT), "bmi_category"] = "Obese"
 
     # Alcohol consumption derived features.
     if ("frequency_of_alcohol_consumption" in df.columns
@@ -176,5 +167,6 @@ def validate(df: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]:
     rejects["reason"] = reasons
 
     cleaned_data = df[~invalid_mask].copy()
+    rejects.to_json("logs/rejects.json", orient="records", indent=2)
 
     return cleaned_data, rejects

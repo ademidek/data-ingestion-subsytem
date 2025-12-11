@@ -1,5 +1,8 @@
 import pandas as pd
 from pathlib import Path
+import logging
+
+logger = logging.getLogger("etl.extract")
 
 def extract(path: str):
     """
@@ -10,14 +13,14 @@ def extract(path: str):
     """
     input_path = Path(path)
 
-    print("Looking for file at:", input_path.resolve())
+    logger.info("Looking for file at: %s", input_path.resolve())
 
     if not input_path.exists():
         raise FileNotFoundError(f"The file {input_path.resolve()} could not be found.")
     
     try:
         df = pd.read_csv(input_path, low_memory=False)
-        print(f"Successfully read {len(df)} rows and {len(df.columns)} columns from {input_path.name}")
+        logger.info("Successfully read %d rows and %d columns from %s", len(df), len(df.columns), input_path.name)
         return df
     except pd.errors.EmptyDataError:
         raise ValueError(f"The file {input_path.resolve()} is empty.")

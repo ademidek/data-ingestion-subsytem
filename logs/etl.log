@@ -230,3 +230,163 @@ Rejected Data:
 2025-12-11 09:43:54,301 | INFO | etl | Rows rejected: 2850
 2025-12-11 09:43:54,301 | INFO | etl | 
 Successfully completed the ETL process.
+2025-12-14 15:13:09,570 | INFO | etl.schema_init | [schema_init] Applied schema from /Users/ademidek/Documents/GitHub/data_ingestion_pipeline/src/schema.sql
+2025-12-14 15:13:09,571 | INFO | etl.extract | Looking for file at: /Users/ademidek/Documents/GitHub/data_ingestion_pipeline/data/Esophageal_Dataset.csv
+2025-12-14 15:13:09,602 | INFO | etl.extract | Successfully read 3985 rows and 85 columns from Esophageal_Dataset.csv
+2025-12-14 15:13:09,602 | INFO | etl | Raw Shape: (3985, 85)
+2025-12-14 15:13:09,602 | INFO | etl.clean | Starting data cleaning process.
+2025-12-14 15:13:09,643 | INFO | etl.clean | Removed 0 duplicate rows
+2025-12-14 15:13:09,680 | INFO | etl.clean | Dropping 5 columns for > 70.0% nulls: ['antireflux_treatment_types', 'goblet_cells_present', 'number_of_relatives_diagnosed', 'primary_pathology_init_pathology_dx_method_other', 'primary_pathology_treatment_prior_to_surgery']
+2025-12-14 15:13:09,681 | INFO | etl.clean | Cleaning finished. Final shape: (3985, 73)
+2025-12-14 15:13:09,681 | INFO | etl | 
+After generic cleaning:
+2025-12-14 15:13:09,681 | INFO | etl | Cleaned Raw Shape: (3985, 73)
+2025-12-14 15:13:09,682 | INFO | etl.validate | Numeric cast: height - Introduced 0 nulls
+2025-12-14 15:13:09,682 | INFO | etl.validate | Numeric cast: weight - Introduced 0 nulls
+2025-12-14 15:13:09,768 | INFO | etl | 
+Validated Cleaned Data:
+2025-12-14 15:13:09,768 | INFO | etl | Validated Cleaned Shape: (1135, 77)
+2025-12-14 15:13:09,768 | INFO | etl | 
+Rejected Data:
+2025-12-14 15:13:09,768 | INFO | etl |   patient_barcode tissue_source_site patient_id  ... total_drinks_per_week alcohol_risk_category                                             reason
+0    tcga-2h-a9gf                 2h       a9gf  ...                   NaN                  <NA>  Missing fields: race_list, frequency_of_alcoho...
+1    tcga-2h-a9gg                 2h       a9gg  ...                   NaN                  <NA>  Missing fields: race_list, frequency_of_alcoho...
+2    tcga-2h-a9gh                 2h       a9gh  ...                   NaN                  <NA>  Missing fields: race_list, frequency_of_alcoho...
+3    tcga-2h-a9gi                 2h       a9gi  ...                   NaN                  <NA>  Missing fields: race_list, frequency_of_alcoho...
+4    tcga-2h-a9gj                 2h       a9gj  ...                   NaN                  <NA>  Missing fields: race_list, frequency_of_alcoho...
+
+[5 rows x 78 columns]
+2025-12-14 15:13:09,801 | INFO | etl | Rejects Shape: (2850, 78)
+2025-12-14 15:13:09,803 | INFO | etl | Columns after validate + rename: ['patient_barcode', 'tissue_source_site', 'patient_id', 'bcr_patient_uuid', 'informed_consent_verified', 'icd_o_3_site', 'icd_o_3_histology', 'icd_10', 'tissue_prospective_collection_indicator', 'tissue_retrospective_collection_indicator', 'days_to_birth', 'country_of_birth', 'gender', 'height', 'weight', 'country_of_procurement', 'state_province_of_procurement', 'city_of_procurement', 'race', 'ethnicity', 'other_dx', 'history_of_neoadjuvant_treatment', 'cancer_status', 'vital_status', 'days_to_last_followup', 'days_to_death', 'smoking_history', 'age_began_smoking_in_years', 'stopped_smoking_year', 'number_pack_years_smoked', 'alcohol_history_documented', 'frequency_of_alcohol_consumption', 'amount_of_alcohol_consumption_per_day', 'reflux_history', 'h_pylori_infection', 'initial_diagnosis_by', 'barretts_esophagus', 'history_of_esophageal_cancer', 'has_new_tumor_events_information', 'day_of_form_completion', 'month_of_form_completion', 'year_of_form_completion', 'has_follow_ups_information', 'has_drugs_information', 'has_radiations_information', 'project', 'stage_event_system_version', 'stage_event_clinical_stage', 'stage_event_pathologic_stage', 'stage_event_tnm_categories', 'primary_pathology_tumor_tissue_site', 'primary_pathology_esophageal_tumor_cental_location', 'primary_pathology_esophageal_tumor_involvement_sites', 'pathology_histological_type', 'primary_pathology_columnar_metaplasia_present', 'primary_pathology_columnar_mucosa_goblet_cell_present', 'primary_pathology_columnar_mucosa_dysplasia', 'primary_pathology_neoplasm_histologic_grade', 'primary_pathology_days_to_initial_pathologic_diagnosis', 'age_at_diagnosis', 'primary_pathology_year_of_initial_pathologic_diagnosis', 'primary_pathology_initial_pathologic_diagnosis_method', 'primary_pathology_lymph_node_metastasis_radiographic_evidence', 'primary_pathology_primary_lymph_node_presentation_assessment', 'primary_pathology_lymph_node_examined_count', 'primary_pathology_number_of_lymphnodes_positive_by_he', 'primary_pathology_number_of_lymphnodes_positive_by_ihc', 'primary_pathology_planned_surgery_status', 'primary_pathology_residual_tumor', 'primary_pathology_karnofsky_performance_score', 'primary_pathology_eastern_cancer_oncology_group', 'primary_pathology_radiation_therapy', 'primary_pathology_postoperative_rx_tx', 'bmi', 'bmi_category', 'total_drinks_per_week', 'alcohol_risk_category']
+2025-12-14 15:13:09,804 | INFO | etl | Columns going into Postgres: ['patient_barcode', 'gender', 'height', 'weight', 'bmi', 'bmi_category', 'race', 'total_drinks_per_week', 'alcohol_risk_category', 'smoking_history', 'reflux_history', 'barretts_esophagus', 'age_at_diagnosis', 'cancer_status', 'vital_status', 'pathology_histological_type']
+2025-12-14 15:13:09,804 | INFO | etl | Number of rows going into Postgres: 1135
+2025-12-14 15:13:09,808 | INFO | etl | Cleaned data saved to 'data/cleaned_esophageal_data.csv'
+2025-12-14 15:13:09,817 | INFO | etl | Rejected data saved to 'data/rejected_esophageal_data.csv'
+2025-12-14 15:13:09,817 | INFO | etl.load | Loading 1135 rows into stg_esophageal using PK=['patient_barcode']
+2025-12-14 15:13:09,900 | INFO | etl | Cleaned data loaded into 'stg_esophageal' table.
+2025-12-14 15:13:09,901 | INFO | etl.load | Loading 2850 rows into stg_rejects using PK=['patient_barcode']
+2025-12-14 15:13:10,051 | INFO | etl | Rejected data loaded into 'stg_rejects' table.
+2025-12-14 15:13:10,052 | INFO | etl | Rows loaded: 1135
+2025-12-14 15:13:10,052 | INFO | etl | Rows rejected: 2850
+2025-12-14 15:13:10,052 | INFO | etl | 
+Successfully completed the ETL process.
+2025-12-14 15:13:16,309 | INFO | etl.schema_init | [schema_init] Applied schema from /Users/ademidek/Documents/GitHub/data_ingestion_pipeline/src/schema.sql
+2025-12-14 15:13:16,309 | INFO | etl.extract | Looking for file at: /Users/ademidek/Documents/GitHub/data_ingestion_pipeline/data/Esophageal_Dataset.csv
+2025-12-14 15:13:16,326 | INFO | etl.extract | Successfully read 3985 rows and 85 columns from Esophageal_Dataset.csv
+2025-12-14 15:13:16,326 | INFO | etl | Raw Shape: (3985, 85)
+2025-12-14 15:13:16,326 | INFO | etl.clean | Starting data cleaning process.
+2025-12-14 15:13:16,358 | INFO | etl.clean | Removed 0 duplicate rows
+2025-12-14 15:13:16,391 | INFO | etl.clean | Dropping 5 columns for > 70.0% nulls: ['antireflux_treatment_types', 'goblet_cells_present', 'number_of_relatives_diagnosed', 'primary_pathology_init_pathology_dx_method_other', 'primary_pathology_treatment_prior_to_surgery']
+2025-12-14 15:13:16,392 | INFO | etl.clean | Cleaning finished. Final shape: (3985, 73)
+2025-12-14 15:13:16,392 | INFO | etl | 
+After generic cleaning:
+2025-12-14 15:13:16,392 | INFO | etl | Cleaned Raw Shape: (3985, 73)
+2025-12-14 15:13:16,393 | INFO | etl.validate | Numeric cast: height - Introduced 0 nulls
+2025-12-14 15:13:16,394 | INFO | etl.validate | Numeric cast: weight - Introduced 0 nulls
+2025-12-14 15:13:16,481 | INFO | etl | 
+Validated Cleaned Data:
+2025-12-14 15:13:16,481 | INFO | etl | Validated Cleaned Shape: (1135, 77)
+2025-12-14 15:13:16,481 | INFO | etl | 
+Rejected Data:
+2025-12-14 15:13:16,481 | INFO | etl |   patient_barcode tissue_source_site patient_id  ... total_drinks_per_week alcohol_risk_category                                             reason
+0    tcga-2h-a9gf                 2h       a9gf  ...                   NaN                  <NA>  Missing fields: race_list, frequency_of_alcoho...
+1    tcga-2h-a9gg                 2h       a9gg  ...                   NaN                  <NA>  Missing fields: race_list, frequency_of_alcoho...
+2    tcga-2h-a9gh                 2h       a9gh  ...                   NaN                  <NA>  Missing fields: race_list, frequency_of_alcoho...
+3    tcga-2h-a9gi                 2h       a9gi  ...                   NaN                  <NA>  Missing fields: race_list, frequency_of_alcoho...
+4    tcga-2h-a9gj                 2h       a9gj  ...                   NaN                  <NA>  Missing fields: race_list, frequency_of_alcoho...
+
+[5 rows x 78 columns]
+2025-12-14 15:13:16,512 | INFO | etl | Rejects Shape: (2850, 78)
+2025-12-14 15:13:16,514 | INFO | etl | Columns after validate + rename: ['patient_barcode', 'tissue_source_site', 'patient_id', 'bcr_patient_uuid', 'informed_consent_verified', 'icd_o_3_site', 'icd_o_3_histology', 'icd_10', 'tissue_prospective_collection_indicator', 'tissue_retrospective_collection_indicator', 'days_to_birth', 'country_of_birth', 'gender', 'height', 'weight', 'country_of_procurement', 'state_province_of_procurement', 'city_of_procurement', 'race', 'ethnicity', 'other_dx', 'history_of_neoadjuvant_treatment', 'cancer_status', 'vital_status', 'days_to_last_followup', 'days_to_death', 'smoking_history', 'age_began_smoking_in_years', 'stopped_smoking_year', 'number_pack_years_smoked', 'alcohol_history_documented', 'frequency_of_alcohol_consumption', 'amount_of_alcohol_consumption_per_day', 'reflux_history', 'h_pylori_infection', 'initial_diagnosis_by', 'barretts_esophagus', 'history_of_esophageal_cancer', 'has_new_tumor_events_information', 'day_of_form_completion', 'month_of_form_completion', 'year_of_form_completion', 'has_follow_ups_information', 'has_drugs_information', 'has_radiations_information', 'project', 'stage_event_system_version', 'stage_event_clinical_stage', 'stage_event_pathologic_stage', 'stage_event_tnm_categories', 'primary_pathology_tumor_tissue_site', 'primary_pathology_esophageal_tumor_cental_location', 'primary_pathology_esophageal_tumor_involvement_sites', 'pathology_histological_type', 'primary_pathology_columnar_metaplasia_present', 'primary_pathology_columnar_mucosa_goblet_cell_present', 'primary_pathology_columnar_mucosa_dysplasia', 'primary_pathology_neoplasm_histologic_grade', 'primary_pathology_days_to_initial_pathologic_diagnosis', 'age_at_diagnosis', 'primary_pathology_year_of_initial_pathologic_diagnosis', 'primary_pathology_initial_pathologic_diagnosis_method', 'primary_pathology_lymph_node_metastasis_radiographic_evidence', 'primary_pathology_primary_lymph_node_presentation_assessment', 'primary_pathology_lymph_node_examined_count', 'primary_pathology_number_of_lymphnodes_positive_by_he', 'primary_pathology_number_of_lymphnodes_positive_by_ihc', 'primary_pathology_planned_surgery_status', 'primary_pathology_residual_tumor', 'primary_pathology_karnofsky_performance_score', 'primary_pathology_eastern_cancer_oncology_group', 'primary_pathology_radiation_therapy', 'primary_pathology_postoperative_rx_tx', 'bmi', 'bmi_category', 'total_drinks_per_week', 'alcohol_risk_category']
+2025-12-14 15:13:16,515 | INFO | etl | Columns going into Postgres: ['patient_barcode', 'gender', 'height', 'weight', 'bmi', 'bmi_category', 'race', 'total_drinks_per_week', 'alcohol_risk_category', 'smoking_history', 'reflux_history', 'barretts_esophagus', 'age_at_diagnosis', 'cancer_status', 'vital_status', 'pathology_histological_type']
+2025-12-14 15:13:16,515 | INFO | etl | Number of rows going into Postgres: 1135
+2025-12-14 15:13:16,518 | INFO | etl | Cleaned data saved to 'data/cleaned_esophageal_data.csv'
+2025-12-14 15:13:16,526 | INFO | etl | Rejected data saved to 'data/rejected_esophageal_data.csv'
+2025-12-14 15:13:16,526 | INFO | etl.load | Loading 1135 rows into stg_esophageal using PK=['patient_barcode']
+2025-12-14 15:13:16,598 | INFO | etl | Cleaned data loaded into 'stg_esophageal' table.
+2025-12-14 15:13:16,598 | INFO | etl.load | Loading 2850 rows into stg_rejects using PK=['patient_barcode']
+2025-12-14 15:13:16,758 | INFO | etl | Rejected data loaded into 'stg_rejects' table.
+2025-12-14 15:13:16,758 | INFO | etl | Rows loaded: 1135
+2025-12-14 15:13:16,758 | INFO | etl | Rows rejected: 2850
+2025-12-14 15:13:16,758 | INFO | etl | 
+Successfully completed the ETL process.
+2025-12-14 19:03:36,938 | INFO | etl.schema_init | [schema_init] Applied schema from /Users/ademidek/Documents/GitHub/data_ingestion_pipeline/src/schema.sql
+2025-12-14 19:03:36,938 | INFO | etl.extract | Looking for file at: /Users/ademidek/Documents/GitHub/data_ingestion_pipeline/data/Esophageal_Dataset.csv
+2025-12-14 19:03:36,957 | INFO | etl.extract | Successfully read 3985 rows and 85 columns from Esophageal_Dataset.csv
+2025-12-14 19:03:36,958 | INFO | etl | Raw Shape: (3985, 85)
+2025-12-14 19:03:36,958 | INFO | etl.clean | Starting data cleaning process.
+2025-12-14 19:03:36,991 | INFO | etl.clean | Removed 0 duplicate rows
+2025-12-14 19:03:37,026 | INFO | etl.clean | Dropping 5 columns for > 70.0% nulls: ['antireflux_treatment_types', 'goblet_cells_present', 'number_of_relatives_diagnosed', 'primary_pathology_init_pathology_dx_method_other', 'primary_pathology_treatment_prior_to_surgery']
+2025-12-14 19:03:37,027 | INFO | etl.clean | Cleaning finished. Final shape: (3985, 73)
+2025-12-14 19:03:37,027 | INFO | etl | 
+After generic cleaning:
+2025-12-14 19:03:37,027 | INFO | etl | Cleaned Raw Shape: (3985, 73)
+2025-12-14 19:03:37,028 | INFO | etl.validate | Numeric cast: height - Introduced 0 nulls
+2025-12-14 19:03:37,028 | INFO | etl.validate | Numeric cast: weight - Introduced 0 nulls
+2025-12-14 19:03:37,114 | INFO | etl | 
+Validated Cleaned Data:
+2025-12-14 19:03:37,114 | INFO | etl | Validated Cleaned Shape: (1135, 77)
+2025-12-14 19:03:37,114 | INFO | etl | 
+Rejected Data:
+2025-12-14 19:03:37,115 | INFO | etl |   patient_barcode tissue_source_site patient_id  ... total_drinks_per_week alcohol_risk_category                                             reason
+0    tcga-2h-a9gf                 2h       a9gf  ...                   NaN                  <NA>  Missing fields: race_list, frequency_of_alcoho...
+1    tcga-2h-a9gg                 2h       a9gg  ...                   NaN                  <NA>  Missing fields: race_list, frequency_of_alcoho...
+2    tcga-2h-a9gh                 2h       a9gh  ...                   NaN                  <NA>  Missing fields: race_list, frequency_of_alcoho...
+3    tcga-2h-a9gi                 2h       a9gi  ...                   NaN                  <NA>  Missing fields: race_list, frequency_of_alcoho...
+4    tcga-2h-a9gj                 2h       a9gj  ...                   NaN                  <NA>  Missing fields: race_list, frequency_of_alcoho...
+
+[5 rows x 78 columns]
+2025-12-14 19:03:37,150 | INFO | etl | Rejects Shape: (2850, 78)
+2025-12-14 19:03:37,152 | INFO | etl | Columns after validate + rename: ['patient_barcode', 'tissue_source_site', 'patient_id', 'bcr_patient_uuid', 'informed_consent_verified', 'icd_o_3_site', 'icd_o_3_histology', 'icd_10', 'tissue_prospective_collection_indicator', 'tissue_retrospective_collection_indicator', 'days_to_birth', 'country_of_birth', 'gender', 'height', 'weight', 'country_of_procurement', 'state_province_of_procurement', 'city_of_procurement', 'race', 'ethnicity', 'other_dx', 'history_of_neoadjuvant_treatment', 'cancer_status', 'vital_status', 'days_to_last_followup', 'days_to_death', 'smoking_history', 'age_began_smoking_in_years', 'stopped_smoking_year', 'number_pack_years_smoked', 'alcohol_history_documented', 'frequency_of_alcohol_consumption', 'amount_of_alcohol_consumption_per_day', 'reflux_history', 'h_pylori_infection', 'initial_diagnosis_by', 'barretts_esophagus', 'history_of_esophageal_cancer', 'has_new_tumor_events_information', 'day_of_form_completion', 'month_of_form_completion', 'year_of_form_completion', 'has_follow_ups_information', 'has_drugs_information', 'has_radiations_information', 'project', 'stage_event_system_version', 'stage_event_clinical_stage', 'stage_event_pathologic_stage', 'stage_event_tnm_categories', 'primary_pathology_tumor_tissue_site', 'primary_pathology_esophageal_tumor_cental_location', 'primary_pathology_esophageal_tumor_involvement_sites', 'pathology_histological_type', 'primary_pathology_columnar_metaplasia_present', 'primary_pathology_columnar_mucosa_goblet_cell_present', 'primary_pathology_columnar_mucosa_dysplasia', 'primary_pathology_neoplasm_histologic_grade', 'primary_pathology_days_to_initial_pathologic_diagnosis', 'age_at_diagnosis', 'primary_pathology_year_of_initial_pathologic_diagnosis', 'primary_pathology_initial_pathologic_diagnosis_method', 'primary_pathology_lymph_node_metastasis_radiographic_evidence', 'primary_pathology_primary_lymph_node_presentation_assessment', 'primary_pathology_lymph_node_examined_count', 'primary_pathology_number_of_lymphnodes_positive_by_he', 'primary_pathology_number_of_lymphnodes_positive_by_ihc', 'primary_pathology_planned_surgery_status', 'primary_pathology_residual_tumor', 'primary_pathology_karnofsky_performance_score', 'primary_pathology_eastern_cancer_oncology_group', 'primary_pathology_radiation_therapy', 'primary_pathology_postoperative_rx_tx', 'bmi', 'bmi_category', 'total_drinks_per_week', 'alcohol_risk_category']
+2025-12-14 19:03:37,153 | INFO | etl | Columns going into Postgres: ['patient_barcode', 'gender', 'height', 'weight', 'bmi', 'bmi_category', 'race', 'total_drinks_per_week', 'alcohol_risk_category', 'smoking_history', 'reflux_history', 'barretts_esophagus', 'age_at_diagnosis', 'cancer_status', 'vital_status', 'pathology_histological_type']
+2025-12-14 19:03:37,153 | INFO | etl | Number of rows going into Postgres: 1135
+2025-12-14 19:03:37,157 | INFO | etl | Cleaned data saved to 'data/cleaned_esophageal_data.csv'
+2025-12-14 19:03:37,165 | INFO | etl | Rejected data saved to 'data/rejected_esophageal_data.csv'
+2025-12-14 19:03:37,165 | INFO | etl.load | Loading 1135 rows into stg_esophageal using PK=['patient_barcode']
+2025-12-14 19:03:37,245 | INFO | etl | Cleaned data loaded into 'stg_esophageal' table.
+2025-12-14 19:03:37,245 | INFO | etl.load | Loading 2850 rows into stg_rejects using PK=['patient_barcode']
+2025-12-14 19:03:37,391 | INFO | etl | Rejected data loaded into 'stg_rejects' table.
+2025-12-14 19:03:37,391 | INFO | etl | Rows loaded: 1135
+2025-12-14 19:03:37,391 | INFO | etl | Rows rejected: 2850
+2025-12-14 19:03:37,391 | INFO | etl | 
+Successfully completed the ETL process.
+2025-12-14 19:04:21,169 | INFO | etl.schema_init | [schema_init] Applied schema from /Users/ademidek/Documents/GitHub/data_ingestion_pipeline/src/schema.sql
+2025-12-14 19:04:21,170 | INFO | etl.extract | Looking for file at: /Users/ademidek/Documents/GitHub/data_ingestion_pipeline/data/Esophageal_Dataset.csv
+2025-12-14 19:04:21,186 | INFO | etl.extract | Successfully read 3985 rows and 85 columns from Esophageal_Dataset.csv
+2025-12-14 19:04:21,186 | INFO | etl | Raw Shape: (3985, 85)
+2025-12-14 19:04:21,186 | INFO | etl.clean | Starting data cleaning process.
+2025-12-14 19:04:21,219 | INFO | etl.clean | Removed 0 duplicate rows
+2025-12-14 19:04:21,253 | INFO | etl.clean | Dropping 5 columns for > 70.0% nulls: ['antireflux_treatment_types', 'goblet_cells_present', 'number_of_relatives_diagnosed', 'primary_pathology_init_pathology_dx_method_other', 'primary_pathology_treatment_prior_to_surgery']
+2025-12-14 19:04:21,254 | INFO | etl.clean | Cleaning finished. Final shape: (3985, 73)
+2025-12-14 19:04:21,254 | INFO | etl | 
+After generic cleaning:
+2025-12-14 19:04:21,254 | INFO | etl | Cleaned Raw Shape: (3985, 73)
+2025-12-14 19:04:21,255 | INFO | etl.validate | Numeric cast: height - Introduced 0 nulls
+2025-12-14 19:04:21,255 | INFO | etl.validate | Numeric cast: weight - Introduced 0 nulls
+2025-12-14 19:04:21,343 | INFO | etl | 
+Validated Cleaned Data:
+2025-12-14 19:04:21,343 | INFO | etl | Validated Cleaned Shape: (1135, 77)
+2025-12-14 19:04:21,343 | INFO | etl | 
+Rejected Data:
+2025-12-14 19:04:21,343 | INFO | etl |   patient_barcode tissue_source_site patient_id  ... total_drinks_per_week alcohol_risk_category                                             reason
+0    tcga-2h-a9gf                 2h       a9gf  ...                   NaN                  <NA>  Missing fields: race_list, frequency_of_alcoho...
+1    tcga-2h-a9gg                 2h       a9gg  ...                   NaN                  <NA>  Missing fields: race_list, frequency_of_alcoho...
+2    tcga-2h-a9gh                 2h       a9gh  ...                   NaN                  <NA>  Missing fields: race_list, frequency_of_alcoho...
+3    tcga-2h-a9gi                 2h       a9gi  ...                   NaN                  <NA>  Missing fields: race_list, frequency_of_alcoho...
+4    tcga-2h-a9gj                 2h       a9gj  ...                   NaN                  <NA>  Missing fields: race_list, frequency_of_alcoho...
+
+[5 rows x 78 columns]
+2025-12-14 19:04:21,378 | INFO | etl | Rejects Shape: (2850, 78)
+2025-12-14 19:04:21,380 | INFO | etl | Columns after validate + rename: ['patient_barcode', 'tissue_source_site', 'patient_id', 'bcr_patient_uuid', 'informed_consent_verified', 'icd_o_3_site', 'icd_o_3_histology', 'icd_10', 'tissue_prospective_collection_indicator', 'tissue_retrospective_collection_indicator', 'days_to_birth', 'country_of_birth', 'gender', 'height', 'weight', 'country_of_procurement', 'state_province_of_procurement', 'city_of_procurement', 'race', 'ethnicity', 'other_dx', 'history_of_neoadjuvant_treatment', 'cancer_status', 'vital_status', 'days_to_last_followup', 'days_to_death', 'smoking_history', 'age_began_smoking_in_years', 'stopped_smoking_year', 'number_pack_years_smoked', 'alcohol_history_documented', 'frequency_of_alcohol_consumption', 'amount_of_alcohol_consumption_per_day', 'reflux_history', 'h_pylori_infection', 'initial_diagnosis_by', 'barretts_esophagus', 'history_of_esophageal_cancer', 'has_new_tumor_events_information', 'day_of_form_completion', 'month_of_form_completion', 'year_of_form_completion', 'has_follow_ups_information', 'has_drugs_information', 'has_radiations_information', 'project', 'stage_event_system_version', 'stage_event_clinical_stage', 'stage_event_pathologic_stage', 'stage_event_tnm_categories', 'primary_pathology_tumor_tissue_site', 'primary_pathology_esophageal_tumor_cental_location', 'primary_pathology_esophageal_tumor_involvement_sites', 'pathology_histological_type', 'primary_pathology_columnar_metaplasia_present', 'primary_pathology_columnar_mucosa_goblet_cell_present', 'primary_pathology_columnar_mucosa_dysplasia', 'primary_pathology_neoplasm_histologic_grade', 'primary_pathology_days_to_initial_pathologic_diagnosis', 'age_at_diagnosis', 'primary_pathology_year_of_initial_pathologic_diagnosis', 'primary_pathology_initial_pathologic_diagnosis_method', 'primary_pathology_lymph_node_metastasis_radiographic_evidence', 'primary_pathology_primary_lymph_node_presentation_assessment', 'primary_pathology_lymph_node_examined_count', 'primary_pathology_number_of_lymphnodes_positive_by_he', 'primary_pathology_number_of_lymphnodes_positive_by_ihc', 'primary_pathology_planned_surgery_status', 'primary_pathology_residual_tumor', 'primary_pathology_karnofsky_performance_score', 'primary_pathology_eastern_cancer_oncology_group', 'primary_pathology_radiation_therapy', 'primary_pathology_postoperative_rx_tx', 'bmi', 'bmi_category', 'total_drinks_per_week', 'alcohol_risk_category']
+2025-12-14 19:04:21,380 | INFO | etl | Columns going into Postgres: ['patient_barcode', 'gender', 'height', 'weight', 'bmi', 'bmi_category', 'race', 'total_drinks_per_week', 'alcohol_risk_category', 'smoking_history', 'reflux_history', 'barretts_esophagus', 'age_at_diagnosis', 'cancer_status', 'vital_status', 'pathology_histological_type']
+2025-12-14 19:04:21,381 | INFO | etl | Number of rows going into Postgres: 1135
+2025-12-14 19:04:21,384 | INFO | etl | Cleaned data saved to 'data/cleaned_esophageal_data.csv'
+2025-12-14 19:04:21,392 | INFO | etl | Rejected data saved to 'data/rejected_esophageal_data.csv'
+2025-12-14 19:04:21,392 | INFO | etl.load | Loading 1135 rows into stg_esophageal using PK=['patient_barcode']
+2025-12-14 19:04:21,467 | INFO | etl | Cleaned data loaded into 'stg_esophageal' table.
+2025-12-14 19:04:21,467 | INFO | etl.load | Loading 2850 rows into stg_rejects using PK=['patient_barcode']
+2025-12-14 19:04:21,614 | INFO | etl | Rejected data loaded into 'stg_rejects' table.
+2025-12-14 19:04:21,614 | INFO | etl | Rows loaded: 1135
+2025-12-14 19:04:21,614 | INFO | etl | Rows rejected: 2850
+2025-12-14 19:04:21,614 | INFO | etl | 
+Successfully completed the ETL process.

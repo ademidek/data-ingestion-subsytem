@@ -1,5 +1,5 @@
 import pandas as pd
-from rules import PLACEHOLDER_COLUMNS, COLUMN_NULL_THRESHOLD
+from .rules import PLACEHOLDER_COLUMNS, COLUMN_NULL_THRESHOLD
 import logging
 
 logger = logging.getLogger("etl.clean")

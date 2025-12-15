@@ -1,11 +1,12 @@
 import pandas as pd
-from readers import csv_reader # Extraction logic
-import clean # Cleaning logic
-import validate # Validation logic
-import load # Loading logic
-from rules import ESOPHAGEAL_COLUMNS, REJECT_COLUMNS
-import schema_init
-from logging_config import setup_logging
+
+from .readers import csv_reader # Extraction logic
+from . import clean # Cleaning logic
+from . import validate # Validation logic
+from . import load # Loading logic
+from .rules import ESOPHAGEAL_COLUMNS, REJECT_COLUMNS
+from . import schema_init
+from .logging_config import setup_logging
 
 logger = setup_logging()
 

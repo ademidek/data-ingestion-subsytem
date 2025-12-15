@@ -1,5 +1,5 @@
 from pathlib import Path
-from repo import get_conn
+from .repo import get_conn
 import logging
 
 def run_schema():

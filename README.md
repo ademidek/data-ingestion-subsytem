@@ -69,4 +69,9 @@ data_ingestion_pipeline/
 * python-dotenv
 * pytest
 
+
+## Project Workflow ⏳
+
+The project utilizes the "Esophageal_Dataset.csv" file. It reads the file, cleans and validates the given data set using the specificed rules, then transforms the file by dropping columns other than those specified, or those that possess too many null values. The data is then enriched by the inclusion of some extra columns such as "BMI" and "drinks_per_week" for easier readability. The resulting dataset is inserted into a PostgreSQL database, esophageal_db as stg_esophageal, while the rejected data is inserted into stg_rejects which includes the reasons the data was rejected. Additionally, two csv files are also created for the cleaned and rejected data respectively, for local use.
+
 To run the script, enter the command "python -m src.main" in the project's root.
